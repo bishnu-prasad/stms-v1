@@ -1,3 +1,14 @@
+"""
+Application Entry Point
+
+Purpose:
+- Initializes the FastAPI application.
+- Registers application metadata.
+- Defines the root API endpoints.
+- Acts as the starting point of the backend server.
+
+This file is executed when the FastAPI application starts.
+"""
 from fastapi import FastAPI
 
 from app.core.settings import settings

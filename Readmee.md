@@ -52,7 +52,7 @@ Install the following software before running the project.
 # Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/bishnu-prasad/stms-v1>
 ```
 
 Move into the backend directory.

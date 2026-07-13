@@ -1,3 +1,19 @@
+"""
+Application Settings
+
+Purpose:
+- Loads application configuration from environment variables (.env).
+- Centralizes all configurable values used throughout the application.
+
+Examples:
+- Application Name
+- Database Configuration
+- JWT Settings
+- Email Configuration
+
+Using centralized settings avoids hardcoded values and simplifies
+configuration management across different environments.
+"""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
