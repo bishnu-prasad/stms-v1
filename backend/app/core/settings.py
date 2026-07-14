@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     database_name: str
     database_user: str
     database_password: str
+    
+    # ClickHouse
+    clickhouse_host: str
+    clickhouse_port: int
+    clickhouse_database: str
+    clickhouse_username: str
+    clickhouse_password: str
 
     # JWT
     secret_key: str
@@ -50,5 +57,15 @@ class Settings(BaseSettings):
     mail_starttls: bool
     mail_ssl_tls: bool
 
-
+    @property
+    def database_url(self) -> str:
+        return (
+            f"postgresql+psycopg://"
+            f"{self.database_user}:"
+            f"{self.database_password}@"
+            f"{self.database_host}:"
+            f"{self.database_port}/"
+            f"{self.database_name}"
+        )
+        
 settings = Settings()
