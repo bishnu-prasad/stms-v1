@@ -8,9 +8,11 @@ class CustomerRepository:
         self,
         db: Session,
         customer: CustomerCreate,
+        customer_code: str,
     ) -> Customer:
         db_customer = Customer(
-            customer_code=customer.customer_code,
+            customer_code=customer_code,
+            company_short_name=customer.company_short_name,
             company_name=customer.company_name,
             status=customer.status,
         )
@@ -24,13 +26,13 @@ class CustomerRepository:
       
     
       
-    def get_customer_by_code(
+    def get_customer_by_company_short_name(
       self,
       db: Session,
-      customer_code: str,
+      company_short_name: str,
 ) -> Customer | None:
       return (
     db.query(Customer)
-    .filter(Customer.customer_code == customer_code)
+    .filter(Customer.company_short_name == company_short_name)
     .first()
 )

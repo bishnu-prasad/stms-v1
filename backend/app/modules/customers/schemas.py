@@ -4,9 +4,10 @@ from datetime import datetime
 
 
 class CustomerBase(BaseModel):
-    customer_code: str
+    company_short_name: str
     company_name: str
     status: str
+
 
 
 class CustomerCreate(CustomerBase):
@@ -14,13 +15,14 @@ class CustomerCreate(CustomerBase):
 
 
 class CustomerUpdate(BaseModel):
-    customer_code: str | None = None
+    company_short_name: str | None = None
     company_name: str | None = None
     status: str | None = None
 
 
 class CustomerResponse(CustomerBase):
     customer_id: int
+    customer_code: str
     created_at: datetime
     updated_at: datetime
 

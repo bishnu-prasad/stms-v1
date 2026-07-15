@@ -14,13 +14,13 @@ class Customer(Base):
 
     customer_id: Mapped[int] = mapped_column(BigInteger,primary_key=True)
     
-    customer_uid: Mapped[str] = mapped_column(
-    String(50),
-    unique=True,
-    nullable=False,
-)
-
     customer_code: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
+        nullable=False,
+    )
+
+    company_short_name: Mapped[str] = mapped_column(
         String(50),
         unique=True,
         nullable=False,
@@ -35,7 +35,7 @@ class Customer(Base):
     
     status: Mapped[str] = mapped_column(
         String(20),
-        default="ACTIVE",
+        default="INACTIVE",
         nullable=False,
     )
     

@@ -16,6 +16,12 @@ class Account(Base):
         primary_key=True,
     )
 
+    account_code: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
+        nullable=False,
+    )
+
     customer_id: Mapped[int] = mapped_column(
         BigInteger,
         ForeignKey("customers.customer_id"),
