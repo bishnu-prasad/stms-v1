@@ -1,11 +1,11 @@
 from enum import Enum
 
 
-class AccountType(str, Enum):
+class AccountType(Enum):
+    PLATFORM_OWNER = "PLATFORM_OWNER"
     SUPER_ADMIN = "SUPER_ADMIN"
     CUSTOMER_ADMIN = "CUSTOMER_ADMIN"
     VENDOR = "VENDOR"
-    TENANT = "TENANT"
     
 class AccountStatus(str, Enum):
     ACTIVE = "ACTIVE"

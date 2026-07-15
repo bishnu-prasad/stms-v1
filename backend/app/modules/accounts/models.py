@@ -43,3 +43,14 @@ class Account(Base):
           Enum(AccountType),
           nullable=False,
     )
+    
+    status: Mapped[AccountStatus] = mapped_column(
+    Enum(AccountStatus),
+    nullable=False,
+    default=AccountStatus.INACTIVE,
+)
+    mobile_no : Mapped[str | None] = mapped_column(
+          String (20),
+          nullable=True,
+
+    )

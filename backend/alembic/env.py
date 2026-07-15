@@ -4,6 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from app.db.base import Base
 from app.modules.customers.models import Customer
+from app.modules.accounts.models import Account
 from app.core.settings import settings
 
 

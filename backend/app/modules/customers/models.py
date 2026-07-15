@@ -13,6 +13,12 @@ class Customer(Base):
     __tablename__ = "customers"
 
     customer_id: Mapped[int] = mapped_column(BigInteger,primary_key=True)
+    
+    customer_uid: Mapped[str] = mapped_column(
+    String(50),
+    unique=True,
+    nullable=False,
+)
 
     customer_code: Mapped[str] = mapped_column(
         String(50),
