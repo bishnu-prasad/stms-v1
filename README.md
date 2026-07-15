@@ -99,7 +99,7 @@ The project emphasizes clean architecture, reusable components, database version
 | Configuration | Pydantic Settings |
 | Environment Variables | Python Dotenv |
 | Authentication | python-jose |
-| Password Hashing | Passlib |
+| Password Hashing | pwdlib |
 | Background Scheduler | APScheduler |
 | Email Service | FastAPI-Mail |
 | API Documentation | Swagger UI & ReDoc |
