@@ -1,19 +1,22 @@
-
-
 "use client";
 
 import { useState } from "react";
 import { login } from "@/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   async function handleLogin() {
     try {
       const response = await login({ identifier, password });
       console.log(response);
-      alert("Login Successful!");
+
+      sessionStorage.setItem("access_token", response.access_token);
+
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       alert("Login Failed!");

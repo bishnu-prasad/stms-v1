@@ -21,3 +21,14 @@ class AuthRepository:
             )
             .first()
         )
+
+    def get_account_by_code(
+        self,
+        db: Session,
+        account_code: str,
+    ) -> Account | None:
+        return (
+            db.query(Account)
+            .filter(Account.account_code == account_code)
+            .first()
+        )
