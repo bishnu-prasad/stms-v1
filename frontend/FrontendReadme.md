@@ -87,28 +87,6 @@ STMS supports multiple user roles (Platform Owner, Super Admin, Customer organiz
 | Package Manager | npm | Native Package & Script Executor |
 
 ---
-
-## Current Status
-
-The project is currently in the initial integration phase.
-
-The following components have been established:
-
-* Next.js App Router initialization
-* Basic routing layout (login & dashboard)
-* Session storage-based JWT authentication flow
-* Axios wrapper interceptors for Bearer token auth
-* Universal, premium split-screen login page matching design guidelines
-* Tailwind CSS utility integration
-
-The following integrations are planned during development:
-
-* **Shadcn UI Setup**: Integrating accessible components (Dialogs, Dropdowns, Sheets, Tables)
-* **React Query Hydration**: Setting up TanStack query client providers for telemetry data caching
-* **AG Grid Integration**: Creating high-density data tables for alarm logs, events, and site details
-* **Apache ECharts Dashboards**: Plotting historical battery voltage, temperature, and power grid analytics
-* **React Arborist Views**: Displaying organizational tree-hierarchies of Regions → Circles → Sites → Equipment
-
 ---
 
 ## Prerequisites
