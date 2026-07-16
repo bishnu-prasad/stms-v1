@@ -1,55 +1,55 @@
-
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/services/auth";
 
-export default function DashboardPage() {
+export default function DashboardRedirectController() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const token = sessionStorage.getItem("access_token");
 
     if (!token) {
       router.replace("/login");
+      return;
     }
 
     getCurrentUser()
-      .then((data) => setUser(data))
+      .then((user) => {
+        if (!user || !user.account_type) {
+           router.replace("/login");
+           return;
+        }
+
+        // Map backend account_type exactly to the corresponding feature dashboards
+        switch (user.account_type) {
+          case "PLATFORM_OWNER":
+            router.replace("/overview");
+            break;
+          case "SUPER_ADMIN":
+            router.replace("/super-admin/dashboard");
+            break;
+          case "CUSTOMER_ADMIN":
+            router.replace("/customer/dashboard");
+            break;
+          case "VENDOR":
+            router.replace("/vendor/dashboard");
+            break;
+          case "ENGINEER":
+            router.replace("/engineer/dashboard");
+            break;
+          default:
+            router.replace("/login");
+            break;
+        }
+      })
       .catch(() => router.replace("/login"));
   }, [router]);
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow">
-        <h1 className="mb-6 text-3xl font-bold">STMS Platform Owner Dashboard</h1>
-
-        <div className="space-y-2">
-          <p><strong>Welcome:</strong> {user?.customer_name}</p>
-          <p><strong>Username:</strong> {user?.username}</p>
-          <p><strong>Role:</strong> {user?.account_type}</p>
-          <p><strong>Customer:</strong> {user?.customer_name}</p>
-        </div>
-
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <button className="rounded-lg border p-4 text-left hover:bg-gray-50">
-            Customers
-          </button>
-          <button className="rounded-lg border p-4 text-left hover:bg-gray-50">
-            Super Admin
-          </button>
-          <button className="rounded-lg border p-4 text-left hover:bg-gray-50">
-            Vendors
-          </button>
-        </div>
-
-        <button className="mt-8 rounded-lg bg-red-600 px-4 py-2 text-white">
-          Logout
-        </button>
-      </div>
-    </main>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="text-sm font-medium text-gray-500">Routing to dashboard...</div>
+    </div>
   );
 }
