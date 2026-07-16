@@ -1,3 +1,24 @@
+// Responsibility: Handle the login process from the user’s perspective.
+
+// User clicks "Sign In"
+//         │
+//         ▼
+// Read identifier & password
+//         │
+//         ▼
+// Call login() service
+//         │
+//         ▼
+// Receive backend response
+//         │
+//         ▼
+// Store access_token in sessionStorage
+//         │
+//         ▼
+// Redirect to /dashboard
+
+// This file is responsible for the login workflow, because it controls what happens after the user submits the form.
+
 "use client";
 
 import { useState } from "react";
@@ -17,6 +38,7 @@ export default function LoginPage() {
       console.log(response);
 
       sessionStorage.setItem("access_token", response.access_token);
+      sessionStorage.setItem("refresh_token", response.refresh_token);
 
       router.push("/dashboard");
     } catch (error) {

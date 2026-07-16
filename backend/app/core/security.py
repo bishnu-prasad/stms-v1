@@ -9,7 +9,8 @@ password_hash = PasswordHash.recommended()
 
 SECRET_KEY = "CHANGE_ME_IN_ENV"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
+REFRESH_TOKEN_EXPIRE_MINUTES = 5
 
 
 def get_password_hash(password: str) -> str:
@@ -33,7 +34,33 @@ def create_access_token(data: dict) -> str:
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES,
     )
 
-    to_encode.update({"exp": expire})
+    to_encode.update(
+        {
+            "exp": expire,
+            "token_type": "access",
+        }
+    )
+
+    return jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM,
+    )
+
+
+def create_refresh_token(data: dict) -> str:
+    to_encode = data.copy()
+
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=REFRESH_TOKEN_EXPIRE_MINUTES,
+    )
+
+    to_encode.update(
+        {
+            "exp": expire,
+            "token_type": "refresh",
+        }
+    )
 
     return jwt.encode(
         to_encode,
