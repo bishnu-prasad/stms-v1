@@ -455,6 +455,3 @@ If styling updates do not apply, check that your browser did not cache older CSS
 
 ---
 
-## License
-
-All rights reserved © 2026 Indio Networks.
