@@ -21,7 +21,7 @@ When to modify this file:
 - Update the API contract for an authentication endpoint.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel , EmailStr , Field 
 
 
  # Login Request Schema
@@ -58,6 +58,41 @@ class RefreshTokenRequest(BaseModel):
 class RefreshTokenResponse(BaseModel):
     access_token: str
     token_type: str
+    
+    
+# Forgot Password Request Schema
+# Used by the POST /auth/forgot-password endpoint.
+# Accepts the registered email address to initiate the password reset process.
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr = Field(
+        ...,
+        description="Registered email address of the account.",
+    )
+
+
+# Forgot Password Response Schema
+# Returned after processing a password reset request.
+# Always returns a generic message to prevent email enumeration.
+class ForgotPasswordResponse(BaseModel):
+    message: str
+
+
+# Reset Password Request Schema
+# Used by the POST /auth/reset-password endpoint.
+# Accepts the reset token and the user's new password.
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+    )
+
+
+# Reset Password Response Schema
+# Returned after a successful password reset.
+class ResetPasswordResponse(BaseModel):
+    message: str
 
 
  # Current User Response Schema

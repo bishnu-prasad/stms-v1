@@ -1,10 +1,11 @@
 from __future__ import annotations
+from datetime import datetime
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.modules.customers.models import Customer
     
 from app.db.base import Base
-from sqlalchemy import BigInteger , ForeignKey , String , Text, Enum
+from sqlalchemy import BigInteger, ForeignKey, String, Text, Enum, DateTime
 from sqlalchemy.orm import Mapped, mapped_column , relationship
 from app.modules.accounts.enums import AccountStatus, AccountType
 
@@ -41,6 +42,15 @@ class Account(Base):
     Text,
     nullable=False,
 )
+    reset_password_token_hash: Mapped[str | None] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+
+    reset_password_token_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
     email: Mapped[str | None] = mapped_column(
     String(255),
     nullable=True,

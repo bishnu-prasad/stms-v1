@@ -42,6 +42,10 @@ from app.modules.auth.schemas import (
     LoginResponse,
     RefreshTokenRequest,
     RefreshTokenResponse,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
 )
 from app.modules.auth.service import AuthService
 
@@ -155,6 +159,37 @@ def logout(response: Response):
         "message": "Logged out successfully."
     }
 
+# Forgot Password Endpoint
+# Accepts a registered email address and sends a password reset link.
+@router.post(
+    "/forgot-password",
+    response_model=ForgotPasswordResponse,
+)
+async def forgot_password(
+    request: ForgotPasswordRequest,
+    db: Session = Depends(get_db),
+):
+    return await auth_service.forgot_password(
+        db=db,
+        request=request,
+    )
+
+# Reset Password Endpoint
+# Resets the account password using a valid password reset token.
+@router.post(
+    "/reset-password",
+    response_model=ResetPasswordResponse,
+)
+def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+):
+    return auth_service.reset_password(
+        db=db,
+        request=request,
+    )
+    
+    
 # Current User Endpoint
  # Returns the authenticated user's profile.
  # Requires a valid access token in the Authorization header.

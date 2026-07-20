@@ -52,10 +52,15 @@ class Settings(BaseSettings):
     mail_username: str
     mail_password: str
     mail_from: str
-    mail_port: int
+    mail_from_name: str
     mail_server: str
+    mail_port: int
     mail_starttls: bool
     mail_ssl_tls: bool
+    mail_validate_certs: bool
+
+    # Frontend
+    frontend_url: str
 
     @property
     def database_url(self) -> str:
