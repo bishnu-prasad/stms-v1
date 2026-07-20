@@ -1,3 +1,13 @@
+// This file does not decide where to go.
+
+// It assumes the user is already trying to access a Platform Owner page.
+
+// Its job is:
+
+// * Check the token.
+// * Verify the session.
+// * Verify the role is PLATFORM_OWNER.
+// * Wrap the page with the common layout (sidebar, header, etc.).
 "use client";
 
 import { useEffect, useState, ReactNode } from "react";
@@ -10,13 +20,6 @@ export default function OwnerRouteLayout({ children }: { children: ReactNode }) 
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("access_token");
-
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
     getCurrentUser()
       .then((data) => {
         // Validate it's a Platform Owner if needed, but since dashboard/page.tsx handles routing,

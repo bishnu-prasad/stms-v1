@@ -12,7 +12,10 @@
 // Receive backend response
 //         │
 //         ▼
-// Store access_token in sessionStorage
+// Backend sets HttpOnly access_token & refresh_token cookies
+//         │
+//         ▼
+// Browser stores cookies automatically
 //         │
 //         ▼
 // Redirect to /dashboard
@@ -37,8 +40,7 @@ export default function LoginPage() {
       const response = await login({ identifier, password });
       console.log(response);
 
-      sessionStorage.setItem("access_token", response.access_token);
-      sessionStorage.setItem("refresh_token", response.refresh_token);
+     
 
       router.push("/dashboard");
     } catch (error) {

@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, ChevronRight, Users, Building2, TrendingUp, ArrowUpRight, X, LogIn } from "lucide-react";
 import { customers, Customer } from "../data/ownerMockData";
+import { OwnerStatusBadge } from "@/owner/components/OwnerStatusBadge";
+import { OwnerMetricCard } from "@/owner/components/OwnerMetricCard";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -170,11 +172,16 @@ function CustomerDetail({ c, onClose }: { c: Customer; onClose: () => void }) {
                 { label: "Monthly Revenue", value: `₹${(c.mrr / 100000).toFixed(1)}L`, icon: "💰" },
                 { label: "Annual Revenue", value: `₹${(c.arr / 10000000).toFixed(2)}Cr`, icon: "📈" },
               ].map((stat) => (
-                <div key={stat.label} className="p-4 rounded-xl text-center" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
-                  <div className="text-2xl">{stat.icon}</div>
-                  <div className="text-base font-bold text-slate-800 mt-1 tabular-nums">{stat.value}</div>
-                  <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide mt-0.5">{stat.label}</div>
-                </div>
+                <OwnerMetricCard
+                  key={stat.label}
+                  title={stat.label}
+                  value={stat.value}
+                  customIcon={stat.icon}
+                  align="center"
+                  className="p-4 rounded-xl text-center bg-slate-50 shadow-none"
+                  valueClassName="text-base font-bold text-slate-800 mt-1 tabular-nums"
+                  titleClassName="text-[10px] text-slate-400 font-semibold uppercase tracking-wide mt-0.5"
+                />
               ))}
               {/* Alarms Summary */}
               <div className="col-span-2 p-4 rounded-xl" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
@@ -233,12 +240,7 @@ function CustomerDetail({ c, onClose }: { c: Customer; onClose: () => void }) {
                         <td className="px-4 py-3 font-mono font-bold text-slate-800">{site.uptime}</td>
                         <td className="px-4 py-3 text-center font-mono">{site.devices}</td>
                         <td className="px-4 py-3 text-right">
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                            site.status === "Online" ? "bg-emerald-50 text-emerald-700" :
-                            site.status === "Warning" ? "bg-amber-50 text-amber-700" : "bg-rose-50 text-rose-700"
-                          }`}>
-                            {site.status}
-                          </span>
+                          <OwnerStatusBadge status={site.status} />
                         </td>
                       </tr>
                     ))}

@@ -7,6 +7,8 @@ import {
 } from "lucide-react";
 import { platformNotifications } from "../data/ownerMockData";
 
+import api from "@/lib/axios";
+
 const SEARCH_ITEMS = [
   { type: "Customer", name: "Reliance Jio", href: "/customers" },
   { type: "Customer", name: "Bharti Airtel", href: "/customers" },
@@ -62,10 +64,12 @@ export function OwnerHeader() {
     error: "#EF4444", warning: "#F59E0B", info: "#6366F1", success: "#10B981",
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("refresh_token");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      router.push("/login");
+    }
   };
 
   return (

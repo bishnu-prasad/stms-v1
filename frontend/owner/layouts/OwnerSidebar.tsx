@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import api from "@/lib/axios";
+
 interface NavItem {
   label: string;
   href: string;
@@ -38,10 +40,12 @@ export function OwnerSidebar() {
     return pathname === href || pathname.startsWith(href + "?");
   }
 
-  const handleLogout = () => {
-     sessionStorage.removeItem("access_token");
-     sessionStorage.removeItem("refresh_token");
-     router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      router.push("/login");
+    }
   };
 
   return (

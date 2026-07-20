@@ -27,7 +27,7 @@ It only calls the API.
  * - getCurrentUser()   -> Retrieves the authenticated user's profile from GET /auth/me.
  *
  * This file does NOT:
- * - Store tokens in sessionStorage.
+ * - Store authentication tokens. The backend manages HttpOnly cookies and the browser stores them automatically.
  * - Handle redirects.
  * - Manage authentication state.
  *
@@ -47,15 +47,12 @@ export async function login(data: LoginRequest) {
 
 
 // Refresh Access Token
-// Calls POST /auth/refresh using the stored refresh token.
-// Returns a new access token from the backend.
+// Calls POST /auth/refresh.
+// The browser automatically sends the HttpOnly refresh_token cookie.
+// The backend issues a new HttpOnly access_token cookie.
 // Used automatically by the Axios response interceptor when the access token expires.
 export async function refreshAccessToken() {
-  const refreshToken = sessionStorage.getItem("refresh_token");
-
-  const response = await api.post("/auth/refresh", {
-    refresh_token: refreshToken,
-  });
+  const response = await api.post("/auth/refresh");
 
   return response.data;
 }

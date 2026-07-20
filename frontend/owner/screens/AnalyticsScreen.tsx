@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import ReactECharts from "echarts-for-react";
+import { OwnerSectionHeader } from "@/owner/components/OwnerSectionHeader";
+import { OwnerMetricCard } from "@/owner/components/OwnerMetricCard";
 import { revenueMonthly, alarmStats, deviceStats, aiInsights } from "../data/ownerMockData";
 import { Zap, TrendingUp, Bell, Cpu, BarChart3 } from "lucide-react";
 
@@ -149,11 +151,15 @@ export function AnalyticsScreen() {
               { label: "API Requests Today", value: "4.82M", trend: "+8%", color: "#8B5CF6" },
               { label: "Monthly Active Users", value: "18,420", trend: "+5%", color: "#10B981" },
             ].map((kpi) => (
-              <div key={kpi.label} className="bg-white p-5 rounded-2xl" style={{ border: "1px solid #E2E8F0" }}>
-                <div className="text-xs text-slate-500 font-semibold mb-2">{kpi.label}</div>
-                <div className="text-2xl font-bold tabular-nums" style={{ color: kpi.color }}>{kpi.value}</div>
-                <div className="text-xs font-semibold text-emerald-600 mt-1">↑ {kpi.trend} from last month</div>
-              </div>
+              <OwnerMetricCard
+                key={kpi.label}
+                title={kpi.label}
+                value={kpi.value}
+                valueColor={kpi.color}
+                subtext={`↑ ${kpi.trend} from last month`}
+                subtextColor="#059669"
+                className="bg-white p-5 rounded-2xl"
+              />
             ))}
           </div>
           <div className="bg-white rounded-2xl p-5" style={{ border: "1px solid #E2E8F0" }}>
@@ -173,11 +179,18 @@ export function AnalyticsScreen() {
               { label: "Pending Payments", value: "₹3.4L", trend: "2 overdue", color: "#EF4444" },
               { label: "Renewals This Month", value: "8", trend: "₹6.2L due", color: "#F59E0B" },
             ].map((kpi) => (
-              <div key={kpi.label} className="bg-white p-4 rounded-2xl" style={{ border: "1px solid #E2E8F0" }}>
-                <div className="text-xs text-slate-500 font-semibold mb-1">{kpi.label}</div>
-                <div className="text-xl font-bold" style={{ color: kpi.color }}>{kpi.value}</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">{kpi.trend}</div>
-              </div>
+              <OwnerMetricCard
+                key={kpi.label}
+                title={kpi.label}
+                value={kpi.value}
+                valueColor={kpi.color}
+                subtext={kpi.trend}
+                subtextColor="#94A3B8"
+                className="bg-white p-4 rounded-2xl"
+                valueClassName="text-xl font-bold tabular-nums"
+                titleClassName="text-xs text-slate-500 font-semibold mb-1"
+                subtextClassName="text-[11px] font-semibold mt-0.5"
+              />
             ))}
           </div>
           <div className="bg-white rounded-2xl p-5" style={{ border: "1px solid #E2E8F0" }}>
@@ -223,10 +236,15 @@ export function AnalyticsScreen() {
               { label: "Minor", value: alarmStats.minor, color: "#64748B", bg: "#F8FAFC" },
               { label: "Resolved", value: alarmStats.resolved, color: "#10B981", bg: "#ECFDF5" },
             ].map((s) => (
-              <div key={s.label} className="p-5 rounded-2xl" style={{ background: s.bg, border: `1px solid ${s.color}20` }}>
-                <div className="text-2xl font-bold tabular-nums" style={{ color: s.color }}>{s.value}</div>
-                <div className="text-xs font-semibold mt-1" style={{ color: s.color }}>{s.label} Alarms</div>
-              </div>
+              <OwnerMetricCard
+                key={s.label}
+                title={`${s.label} Alarms`}
+                value={s.value}
+                valueColor={s.color}
+                className="p-5 rounded-2xl"
+                titleClassName="text-xs font-semibold"
+                subtextClassName="hidden"
+              />
             ))}
           </div>
           <div className="grid grid-cols-2 gap-4">

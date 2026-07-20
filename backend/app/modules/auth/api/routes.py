@@ -30,7 +30,7 @@ When to modify this file:
 - Update request or response models for an endpoint.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
@@ -52,7 +52,7 @@ router = APIRouter(
 
 auth_service = AuthService()
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
  # Login Endpoint
@@ -63,13 +63,34 @@ security = HTTPBearer()
     response_model=LoginResponse,
 )
 def login(
+    response: Response,
     login_data: LoginRequest,
     db: Session = Depends(get_db),
 ):
-    return auth_service.login(
+    result = auth_service.login(
         db=db,
         login_data=login_data,
     )
+
+    response.set_cookie(
+        key="access_token",
+        value=result.access_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        path="/",
+    )
+
+    response.set_cookie(
+        key="refresh_token",
+        value=result.refresh_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        path="/",
+    )
+
+    return result
     
     
  # Refresh Token Endpoint
@@ -80,16 +101,61 @@ def login(
     response_model=RefreshTokenResponse,
 )
 def refresh_token(
-    refresh_data: RefreshTokenRequest,
+    request: Request,
+    response: Response,
+    refresh_data: RefreshTokenRequest | None = None,
     db: Session = Depends(get_db),
 ):
-    return auth_service.refresh_access_token(
+    refresh_token_value = None
+
+    if refresh_data is not None:
+        refresh_token_value = refresh_data.refresh_token
+
+    if not refresh_token_value:
+        refresh_token_value = request.cookies.get("refresh_token")
+
+    if not refresh_token_value:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token not provided.",
+        )
+
+    result = auth_service.refresh_access_token(
         db=db,
-        refresh_data=refresh_data,
+        refresh_data=RefreshTokenRequest(refresh_token=refresh_token_value),
     )
-    
-    
- # Current User Endpoint
+
+    response.set_cookie(
+        key="access_token",
+        value=result.access_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        path="/",
+    )
+
+    return result
+
+
+# Logout Endpoint
+# Clears the authentication cookies from the browser.
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        path="/",
+    )
+
+    response.delete_cookie(
+        key="refresh_token",
+        path="/",
+    )
+
+    return {
+        "message": "Logged out successfully."
+    }
+
+# Current User Endpoint
  # Returns the authenticated user's profile.
  # Requires a valid access token in the Authorization header.
 @router.get(
@@ -97,10 +163,22 @@ def refresh_token(
     response_model=CurrentUserResponse,
 )
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
     db: Session = Depends(get_db),
 ):
-    token = credentials.credentials
+    token = None
+
+    if credentials is not None:
+        token = credentials.credentials
+    else:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication credentials were not provided.",
+        )
     try:
         return auth_service.get_current_user(
             db=db,

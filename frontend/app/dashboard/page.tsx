@@ -1,3 +1,9 @@
+// Its job is routing.
+
+// It answers:
+
+// “Where should this user go after logging in?”
+
 "use client";
 
 import { useEffect } from "react";
@@ -8,13 +14,6 @@ export default function DashboardRedirectController() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = sessionStorage.getItem("access_token");
-
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
     getCurrentUser()
       .then((user) => {
         if (!user || !user.account_type) {
