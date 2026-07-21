@@ -28,6 +28,8 @@ import { useState } from "react";
 import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import AuthHero from "@/modules/auth/components/AuthHero";
+import { toast } from "sonner";
+import axios from "axios";
 
 import LoginForm from "@/modules/auth/login/LoginForm";
 
@@ -43,12 +45,22 @@ export default function LoginPage() {
       const response = await login({ identifier, password });
       console.log(response);
 
-     
+      if (response?.message) {
+        toast.success(response.message);
+      }
 
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
-      alert("Login Failed!");
+      if (axios.isAxiosError(error)) {
+        if (!error.response) {
+          toast.error("Unable to connect to the server.");
+        } else {
+          toast.error(error.response.data?.detail || "Login Failed!");
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   }
 
