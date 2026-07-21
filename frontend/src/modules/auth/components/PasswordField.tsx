@@ -5,17 +5,19 @@ type PasswordFieldProps = {
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   showPassword: boolean;
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  label?: string;
 };
 export default function PasswordField({
   password,
   setPassword,
   showPassword,
   setShowPassword,
+  label,
 }: PasswordFieldProps) {
 
   return (
     <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Password</label>
+                <label className="text-xs font-semibold text-slate-700">{label || "Password"}</label>
                 <div className="relative">
                   <div className="absolute left-3.5 top-3.5 text-slate-400">
                     <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
