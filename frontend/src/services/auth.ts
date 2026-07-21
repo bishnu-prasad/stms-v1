@@ -61,3 +61,12 @@ export async function getCurrentUser() {
   const response = await api.get("/auth/me");
   return response.data;
 }
+
+interface ForgotPasswordRequest {
+  email: string;
+}
+
+export async function forgotPassword(data: ForgotPasswordRequest) {
+  const response = await api.post("/auth/forgot-password", data);
+  return response.data;
+}

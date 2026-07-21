@@ -1,6 +1,5 @@
 export default function AuthHero() {
   return (
-      //  {/* ── LEFT: Atmospheric Telecom Tower ─────────────────── */}
 
       <div className="hidden lg:flex relative bg-[#090D16] text-white flex-col justify-between p-12 overflow-hidden select-none">
           {/* Subtle grid pattern overlay */}
