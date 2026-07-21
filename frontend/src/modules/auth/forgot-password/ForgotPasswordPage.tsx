@@ -1,7 +1,7 @@
 "use client";
 
 import AuthHero from "@/modules/auth/components/AuthHero";
-import ForgotPasswordForm from "./ForgotPasswordForm";
+import ForgotPasswordForm from "@/modules/auth/forgot-password/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
   return (
