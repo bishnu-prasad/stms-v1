@@ -47,3 +47,9 @@ build/
 # Graphify
 # ===========================
 graphify-out/
+
+# ===========================
+# Agent Rules
+# ===========================
+AGENTS.md
+CLAUDE.md

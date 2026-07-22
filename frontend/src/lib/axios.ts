@@ -52,8 +52,16 @@ import { refreshAccessToken } from "@/services/auth";
 
 
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+if (!apiBaseUrl) {
+  throw new Error(
+    "NEXT_PUBLIC_API_URL is not configured. Please create a .env.local file from .env.example."
+  );
+}
+
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: apiBaseUrl,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

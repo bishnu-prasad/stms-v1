@@ -35,6 +35,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 
+from app.core.settings import settings
 from app.db.dependencies import get_db
 from app.modules.auth.schemas import (
     CurrentUserResponse,
@@ -80,7 +81,7 @@ def login(
         key="access_token",
         value=result.access_token,
         httponly=True,
-        secure=False,
+        secure=(settings.app_env.lower() == "production"),
         samesite="lax",
         path="/",
     )
@@ -89,7 +90,7 @@ def login(
         key="refresh_token",
         value=result.refresh_token,
         httponly=True,
-        secure=False,
+        secure=(settings.app_env.lower() == "production"),
         samesite="lax",
         path="/",
     )
@@ -133,7 +134,7 @@ def refresh_token(
         key="access_token",
         value=result.access_token,
         httponly=True,
-        secure=False,
+        secure=(settings.app_env.lower() == "production"),
         samesite="lax",
         path="/",
     )

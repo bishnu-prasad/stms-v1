@@ -129,10 +129,21 @@ The quickest way to run the STMS Frontend locally:
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1/frontend
 npm install
+
+# Copy environment configuration:
+# macOS / Linux:
+cp .env.example .env.local
+
+# Windows:
+copy .env.example .env.local
+
 npm run dev
 ```
 
 Once the server starts successfully, open [http://localhost:3000](http://localhost:3000) in your browser.
+
+> [!IMPORTANT]
+> The FastAPI backend service must be running on the URL configured in `NEXT_PUBLIC_API_URL` (`http://localhost:8000` by default) for login and telemetry API functionality to work.
 
 ---
 
@@ -149,6 +160,7 @@ brew install node git
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1/frontend
 npm install
+cp .env.example .env.local
 ```
 
 ### Step 3 — Start Development Server
@@ -173,6 +185,7 @@ sudo apt install -y nodejs npm git
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1/frontend
 npm install
+cp .env.example .env.local
 ```
 
 ### Step 3 — Start Development Server
@@ -199,6 +212,7 @@ git --version
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1\frontend
 npm install
+copy .env.example .env.local
 ```
 
 ### Step 3 — Start Development Server
@@ -210,13 +224,21 @@ npm run dev
 
 ## Environment Variables
 
-The STMS Frontend currently resolves the backend API endpoint directly via a centralized Axios configuration in `src/lib/axios.ts`, which communicates with:
+The STMS Frontend requires environment variables to configure external service endpoints.
 
-```text
-http://localhost:8000
-```
+Copy `.env.example` to `.env.local` before starting the application:
 
-The application does not read from `process.env`, and no `.env.example` or `.env.local` file is required to run the project.
+| Variable | Default | Requirement | Description |
+| --- | --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | **Required** | FastAPI backend base REST API URL |
+
+> [!WARNING]
+> `NEXT_PUBLIC_API_URL` is **mandatory**. The application will throw an explicit configuration error at startup if `.env.local` is missing or `NEXT_PUBLIC_API_URL` is not defined:
+> ```text
+> Error: NEXT_PUBLIC_API_URL is not configured. Please create a .env.local file from .env.example.
+> ```
+
+The central Axios client in `src/lib/axios.ts` reads `process.env.NEXT_PUBLIC_API_URL` to route requests to the backend service.
 
 ---
 

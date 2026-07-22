@@ -836,16 +836,23 @@ CLICKHOUSE_PASSWORD=
 SECRET_KEY=your_secret_key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_MINUTES=1440
 # ==========================================
 # Email Configuration
 # ==========================================
 MAIL_USERNAME=your_email@example.com
 MAIL_PASSWORD=your_email_password
 MAIL_FROM=your_email@example.com
-MAIL_PORT=587
+MAIL_FROM_NAME=STMS Support
 MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
 MAIL_STARTTLS=True
 MAIL_SSL_TLS=False
+MAIL_VALIDATE_CERTS=True
+# ==========================================
+# Frontend Configuration
+# ==========================================
+FRONTEND_URL=http://localhost:3000
 ```
 
 Note: TimescaleDB does not require separate environment variables because it is a PostgreSQL extension. Once PostgreSQL is configured and the TimescaleDB extension is enabled, the application automatically uses its time-series capabilities through the existing PostgreSQL connection.

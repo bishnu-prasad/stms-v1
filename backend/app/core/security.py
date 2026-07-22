@@ -5,12 +5,14 @@ from jose import JWTError, jwt
 from pwdlib import PasswordHash
 
 
+from app.core.settings import settings
+
 password_hash = PasswordHash.recommended()
 
-SECRET_KEY = "CHANGE_ME_IN_ENV"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
-REFRESH_TOKEN_EXPIRE_MINUTES = 5
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+REFRESH_TOKEN_EXPIRE_MINUTES = settings.refresh_token_expire_minutes
 
 
 def get_password_hash(password: str) -> str:
