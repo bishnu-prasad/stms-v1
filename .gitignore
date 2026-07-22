@@ -13,7 +13,6 @@ htmlcov/
 # Environment Variables
 # ===========================
 .env
-.env.*
 
 # ===========================
 # Node.js

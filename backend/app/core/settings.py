@@ -60,8 +60,8 @@ class Settings(BaseSettings):
     mail_ssl_tls: bool
     mail_validate_certs: bool
 
-    # Frontend
-    frontend_url: str
+    
+    
 
     @property
     def database_url(self) -> str:
