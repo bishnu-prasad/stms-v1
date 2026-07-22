@@ -9,7 +9,7 @@ Enterprise-grade Next.js frontend for the Site Telemetry Management System (STMS
 * Overview
 * Architecture Overview
 * Technology Stack
-* Current Status
+* Backend Requirement
 * Prerequisites
 * Quick Start
 * Setup: macOS
@@ -21,7 +21,6 @@ Enterprise-grade Next.js frontend for the Site Telemetry Management System (STMS
 * Troubleshooting
 * Future Roadmap
 * Contributing
-* License
 
 ---
 
@@ -31,7 +30,7 @@ The Site Telemetry Management System (STMS) Frontend is an enterprise-grade web 
 
 The application is built using Next.js 16 (App Router) with TypeScript and Tailwind CSS, utilizing best practices in modern web development to construct responsive, highly performant, and premium interfaces.
 
-STMS supports multiple user roles (Platform Owner, Super Admin, Customer organization, Vendor partner, Field Engineer) with role-based routing. It leverages modern libraries for real-time telemetry charting (Apache ECharts), telemetry tree-view hierarchies (React Arborist), tabular alarm lists (AG Grid), and secure client-side JWT-based session management.
+STMS supports multiple user roles (Platform Owner, Super Admin, Customer organization, Vendor partner, Field Engineer) with role-based routing. It leverages modern libraries for real-time telemetry charting (Apache ECharts), telemetry tree-view hierarchies (React Arborist), tabular alarm lists (AG Grid), and secure client-side session management.
 
 ---
 
@@ -45,7 +44,7 @@ STMS supports multiple user roles (Platform Owner, Super Admin, Customer organiz
          │                                       │
          │  • App Router (Next.js 16)            │
          │  • TypeScript                         │
-         │  • Tailwind CSS / CSS Modules         │
+         │  • Tailwind CSS                       │
          └───────────────────────────────────────┘
                         │
                   HTTP / HTTPS
@@ -87,19 +86,32 @@ STMS supports multiple user roles (Platform Owner, Super Admin, Customer organiz
 | Package Manager | npm | Native Package & Script Executor |
 
 ---
+
+## Backend Requirement
+
+The STMS Frontend application can be booted and navigated independently in development mode.
+
+However, all authentication flows (login, session refresh) and live data features require the FastAPI backend service to be running. By default, the frontend sends requests to:
+
+```text
+http://localhost:8000
+```
+
+Before attempting to log in or query telemetry data, make sure the backend service is started and accessible at `http://localhost:8000`.
+
 ---
 
 ## Prerequisites
 
-Before running the project, install the following software.
+Before running the project, install the following software:
 
-| Software | Minimum Version | Purpose |
+| Software | Required Version | Purpose |
 | --- | --- | --- |
-| Node.js | v18.x or v20.x (LTS) | Application Runtime Environment |
-| npm | Latest (v10+) | Package Manager |
-| Git | Latest | Version Control |
+| **Node.js** | `v20 LTS` (recommended) or `v18 LTS` or newer | Application Runtime Environment |
+| **npm** | `v10+` (included with Node.js LTS) | Package Manager |
+| **Git** | Latest | Version Control |
 
-Verify your installation.
+To verify your installation:
 
 ```bash
 node --version
@@ -111,154 +123,59 @@ git --version
 
 ## Quick Start
 
-The quickest way to run the STMS Frontend locally is:
+The quickest way to run the STMS Frontend locally:
 
 ```bash
-# Clone the repository
 git clone https://github.com/bishnu-prasad/STMS-V1.git
-# Move into frontend
 cd STMS-V1/frontend
-# Install dependencies
 npm install
-# Copy environment configuration
-cp .env.example .env.local
-# Update NEXT_PUBLIC_API_URL inside .env.local if backend is hosted on a custom port
-# Start the development server
 npm run dev
 ```
 
-Once the server starts successfully, open:
-
-### Local Web Client
-
-http://localhost:3000
+Once the server starts successfully, open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
 ## Setup: macOS
 
-The project has been tested on macOS using Node.js v20 (LTS) and the standard npm package manager.
-
----
-
-### Step 1 — Install Homebrew
-
-If Homebrew is not installed:
-
+### Step 1 — Check Prerequisites
+Ensure Node.js and Git are installed. If using Homebrew:
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install node git
 ```
 
-Verify installation:
-
-```bash
-brew --version
-```
-
----
-
-### Step 2 — Install Node.js & Git
-
-Install Node.js (LTS), Git, and verify the install.
-
-```bash
-brew install node
-brew install git
-```
-
-Verify installation:
-
-```bash
-node -v
-npm -v
-git --version
-```
-
----
-
-### Step 3 — Clone Repository & Install
-
+### Step 2 — Clone & Install
 ```bash
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1/frontend
 npm install
 ```
 
----
-
-### Step 4 — Configure Environment Variables
-
-Create and configure your local environment configuration:
-
-```bash
-cp .env.example .env.local
-```
-
-Open the file and verify values:
-
-```env
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
-```
-
----
-
-### Step 5 — Run the Frontend
-
-Start the Next.js development server:
-
+### Step 3 — Start Development Server
 ```bash
 npm run dev
-```
-
-Expected output:
-
-```text
-▲ Next.js 16.2.10
-- Local: http://localhost:3000
 ```
 
 ---
 
 ## Setup: Linux
 
-The project supports Ubuntu, Debian, Fedora, and other modern Linux distributions.
-
----
-
-### Step 1 — Install Node.js & Git
-
-Install Node.js using NodeSource or your package manager:
-
+### Step 1 — Check Prerequisites
+Install Node.js (v18+ or v20+) and Git using your package manager:
 ```bash
 # Ubuntu/Debian
 sudo apt update
 sudo apt install -y nodejs npm git
 ```
 
-Verify installation:
-
-```bash
-node -v
-npm -v
-```
-
----
-
-### Step 2 — Setup Project & Environment
-
+### Step 2 — Clone & Install
 ```bash
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1/frontend
 npm install
-cp .env.example .env.local
 ```
 
-Update your `.env.local` config with the correct API URL.
-
----
-
 ### Step 3 — Start Development Server
-
 ```bash
 npm run dev
 ```
@@ -267,41 +184,24 @@ npm run dev
 
 ## Setup: Windows
 
-The project supports Windows 10 and Windows 11 natively or using WSL2.
+### Step 1 — Check Prerequisites
+Install Node.js (LTS installer from nodejs.org) and Git for Windows.
 
----
-
-### Step 1 — Install Software
-
-Install:
-
-* Node.js (Windows Installer `.msi` from nodejs.org)
-* Git for Windows
-* Visual Studio Code (recommended editor)
-
-Verify installation in Command Prompt/PowerShell:
-
+Verify installation in Command Prompt or PowerShell:
 ```cmd
 node --version
 npm --version
 git --version
 ```
 
----
-
-### Step 2 — Setup Project
-
+### Step 2 — Clone & Install
 ```cmd
 git clone https://github.com/bishnu-prasad/STMS-V1.git
 cd STMS-V1\frontend
 npm install
-copy .env.example .env.local
 ```
 
----
-
-### Step 3 — Run Development Server
-
+### Step 3 — Start Development Server
 ```cmd
 npm run dev
 ```
@@ -310,117 +210,76 @@ npm run dev
 
 ## Environment Variables
 
-The project includes a `.env.example` file containing configurations for external services. Copy this file to `.env.local` and customize.
+The STMS Frontend currently resolves the backend API endpoint directly via a centralized Axios configuration in `src/lib/axios.ts`, which communicates with:
 
-| Variable Name | Default Value | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | `http://127.0.0.1:8000` | The entry-point URI of the FastAPI backend service |
+```text
+http://localhost:8000
+```
+
+The application does not read from `process.env`, and no `.env.example` or `.env.local` file is required to run the project.
 
 ---
 
 ## Project Structure
 
-STMS Frontend follows a modular page layout, directly mapping modules from the Vite React prototype onto Next.js App Router conventions:
+STMS Frontend follows a modular directory layout under Next.js App Router conventions:
 
 ```text
 frontend/
-├── app/                              # Next.js App Router (1:1 mapped to prototype modules)
-│   ├── layout.tsx                    # Global context & styling layout
-│   ├── globals.css                   # Core Tailwind CSS & theme tokens
-│   ├── login/                        # Unified, premium login page view
-│   │   └── page.tsx
-│   ├── (customer)/                   # Mapped from prototype /src/pages/ (General portal)
-│   │   ├── dashboard/                # Main customer telemetry overview
-│   │   ├── monitor/                  # Active equipment telemetry grid
-│   │   ├── energy/                   # Fuel, solar, & power grid monitoring
-│   │   ├── network/                  # Site connectivity topology
-│   │   ├── performance/              # System SLA and network charts
-│   │   ├── reports/                  # Batch report builder and exporter
-│   │   ├── sites/                    # Site directory & telemetry map
-│   │   │   └── [siteId]/             # Site telemetry & sensor dashboards
-│   │   └── users/                    # Customer organization user directories
-│   ├── (owner)/                      # Mapped from prototype /src/owner/
-│   │   ├── overview/                 # Platform administration health dashboard
-│   │   ├── customers/                # Customer tenant database directory
-│   │   ├── vendors/                  # Vendor partner logs & associations
-│   │   ├── billing/                  # Platform plan subscription & payments
-│   │   ├── platform-health/          # API, Timescale, & ClickHouse latency logs
-│   │   └── system/                   # Global configuration & SMTP settings
-│   ├── (super-admin)/                # Mapped from prototype /src/super-admin/
-│   │   ├── alarms/                   # Global real-time alarms and thresholds
-│   │   ├── analytics/                # Multi-tenant infrastructure analysis
-│   │   ├── gateways/                 # IoT gateway registration and provisioning
-│   │   ├── organizations/            # Multi-level organization hierarchy trees
-│   │   └── licenses/                 # Software licensing keys & activations
-│   ├── (vendor)/                     # Mapped from prototype /src/vendor/
-│   │   ├── dashboard/                # Service SLA and job assignments
-│   │   ├── assigned-sites/           # SLA tower lists assigned to vendor
-│   │   ├── engineers/                # Vendor's field engineers dispatcher
-│   │   ├── jobs/                     # Dispatched maintenance check sheets
-│   │   └── active-alarms/            # High priority warnings assigned to vendor
-│   └── (engineer)/                   # Mapped from prototype /src/engineer/
-│       ├── dashboard/                # My daily jobs queue & site routes
-│       ├── jobs/                     # Onsite task execution, checks & check-ins
-│       └── inventory/                # Spare parts request logs and tools lists
-├── components/                       # Reusable React layout blocks & atoms
-│   ├── ui/                           # Shadcn UI base components (Button, Input, Card)
-│   ├── layout/                       # Multi-role Sidebar and Navigation layouts
-│   └── charts/                       # Wrapped Apache ECharts components
-├── contexts/                         # Client state contexts (e.g. AuthContext)
-├── data/                             # Mock tables, structures, and static maps
-├── hooks/                            # Custom hooks (e.g. useTelemetryData)
-├── lib/                              # External wrappers and clients
-│   ├── axios.ts                      # Axios configuration (auth interceptors)
-│   ├── query-client.ts               # React Query client initializer
-│   └── utils.ts                      # Tailwind merge & styling helpers
-├── public/                           # Static assets served directly
-│   ├── login-bg.png                  # Custom atmospheric cell-tower photo
-│   └── favicon.svg                   # Concentric target orange favicon logo
-├── services/                         # Client-side API request methods
-│   ├── auth.ts                       # Login, getCurrentUser, and JWT handling
-│   ├── sites.ts                      # Site list and sensor logs endpoints
-│   └── telemetry.ts                  # Real-time telemetry log fetch APIs
-├── package.json                      # Dependencies and npm scripts
-└── tsconfig.json                     # TypeScript compiler configuration
+│
+├── src/                              # Application source code
+│   │
+│   ├── app/                          # Next.js App Router (routing, layouts, pages)
+│   ├── modules/                      # Feature modules (auth, platform-owner, etc.)
+│   ├── components/                   # Shared UI components (Shadcn primitives)
+│   ├── services/                     # API client methods
+│   ├── hooks/                        # Global reusable React hooks
+│   ├── providers/                    # React Context providers
+│   ├── store/                        # Global state management
+│   ├── config/                       # Application configuration
+│   ├── schemas/                      # Validation schemas (Zod)
+│   ├── types/                        # Shared TypeScript types
+│   ├── lib/                          # Utilities (Axios client setup in src/lib/axios.ts)
+│   ├── assets/                       # Images, icons, and static media
+│   └── styles/                       # Global CSS and Tailwind imports
+│
+├── public/                           # Static public assets
+├── package.json                      # Project dependencies and npm scripts
+├── package-lock.json                 # Locked dependency graph
+├── tsconfig.json                     # TypeScript compiler configuration
+├── next.config.ts                    # Next.js configuration
+├── eslint.config.mjs                 # ESLint configuration
+├── postcss.config.mjs                # PostCSS configuration
+├── .gitignore                        # Git ignore rules
+└── FrontendReadme.md                 # Frontend documentation
 ```
 
 ---
 
 ## Development Workflow
 
-### Coding Standards
-* Write clean, type-safe TypeScript code.
-* Follow the folder structures strictly. Do not rename variables or break existing authentication methods.
-* Utilize reusable Shadcn UI components for consistency.
-* Use Zod schemas to validate form inputs.
-
-### Build & Compilation
-Always build your project locally before submitting code to verify it passes typechecking and production-ready bundler checks:
-
-```bash
-npm run build
-```
+### Scripts
+* `npm run dev` — Starts the Next.js development server on `http://localhost:3000`.
+* `npm run build` — Compiles the production build.
+* `npm run start` — Starts the built production server.
+* `npm run lint` — Runs ESLint code quality checks.
 
 ---
 
 ## Troubleshooting
 
-### API Connection Refused
-If login triggers an error or redirects do not occur:
-1. Ensure the FastAPI backend is running locally at `http://127.0.0.1:8000`.
-2. Check that your browser has local network access allowed to localhost.
-3. Confirm `sessionStorage` permissions are enabled (required for token storage).
-
-### Tailwind Build Warnings
-If styling updates do not apply, check that your browser did not cache older CSS sheets, and verify that Tailwind CLI is compiling successfully by running `npm run build`.
+### Backend Connection Failed
+If API calls fail or login redirects do not complete:
+1. Ensure the FastAPI backend is running locally at `http://localhost:8000`.
+2. Confirm browser permissions allow `sessionStorage` and cookies.
 
 ---
 
 ## Future Roadmap
 
-* Real-time WebSocket alarm notifications from TimescaleDB alerts.
-* PDF/Excel reports download wrapper integration.
-* Offline telemetry snapshot caching for field engineer check-ins.
+* Real-time WebSocket alarm notifications.
+* PDF/Excel report export wrappers.
+* Offline telemetry snapshot caching.
 
 ---
 
@@ -428,8 +287,5 @@ If styling updates do not apply, check that your browser did not cache older CSS
 
 1. Create a feature branch.
 2. Commit your modifications.
-3. Run `npm run build` to verify type safety.
+3. Run `npm run build` to verify compilation.
 4. Submit a Pull Request.
-
----
-
