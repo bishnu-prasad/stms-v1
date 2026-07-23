@@ -5,10 +5,12 @@ import Link from "next/link";
 import { forgotPassword } from "@/services/auth";
 import { toast } from "sonner";
 import axios from "axios";
+import { useCountdown } from "@/hooks/useCountdown";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { secondsLeft, isCountingDown, startCountdown } = useCountdown(60);
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,16 +30,23 @@ export default function ForgotPasswordForm() {
       return;
     }
 
-    if (isLoading) return;
+    if (isLoading || isCountingDown) return;
     setIsLoading(true);
 
     try {
       const response = await forgotPassword({ email: trimmedEmail });
       toast.success(response.message || "Password reset link sent!");
-      setEmail("");
+      startCountdown(60);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.detail || "Failed to send reset link.");
+        if (error.response?.status === 429) {
+          toast.error("Please wait 60 seconds before requesting another reset link.");
+          if (!isCountingDown) {
+            startCountdown(60);
+          }
+        } else {
+          toast.error(error.response?.data?.detail || "Failed to send reset link.");
+        }
       } else {
         toast.error("An unexpected error occurred.");
       }
@@ -98,10 +107,14 @@ export default function ForgotPasswordForm() {
           <button
             type="button"
             onClick={handleForgotPassword}
-            disabled={isLoading}
+            disabled={isLoading || isCountingDown}
             className="w-full h-11 font-bold text-sm rounded-xl text-white bg-slate-800 hover:bg-slate-900 cursor-pointer transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Sending..." : "Send Reset Link"}
+            {isLoading
+              ? "Sending..."
+              : isCountingDown
+              ? `Resend in ${secondsLeft}s`
+              : "Send Reset Link"}
           </button>
           <div className="mt-1 text-center">
             <Link

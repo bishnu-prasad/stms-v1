@@ -32,7 +32,9 @@ When to modify this file:
 Think of this file as the 'brain' of the Authentication module. Every authentication-related decision should be made here before interacting with the database or returning a response.
 """
 
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
 
 from jose import JWTError
 
@@ -81,16 +83,25 @@ class AuthService:
         )
 
         if account is None:
-            raise ValueError("Invalid email/mobile number or password.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid email/mobile number or password.",
+            )
 
         if account.status.value != "ACTIVE":
-            raise ValueError("Account is not active.")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account is not active.",
+            )
 
         if not verify_password(
             login_data.password,
             account.password_hash,
         ):
-            raise ValueError("Invalid email/mobile number or password.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid email/mobile number or password.",
+            )
 
         access_token = create_access_token(
             {

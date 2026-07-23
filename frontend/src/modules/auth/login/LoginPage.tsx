@@ -56,7 +56,26 @@ export default function LoginPage() {
         if (!error.response) {
           toast.error("Unable to connect to the server.");
         } else {
-          toast.error(error.response.data?.detail || "Login Failed!");
+          const status = error.response.status;
+          const detail = error.response.data?.detail;
+
+          switch (status) {
+            case 401:
+              toast.error(detail || "Invalid email/mobile number or password.");
+              break;
+            case 403:
+              toast.error(detail || "Account is not active.");
+              break;
+            case 429:
+              toast.error("Too many login attempts. Please wait before trying again.");
+              break;
+            case 500:
+              toast.error("Something went wrong. Please try again later.");
+              break;
+            default:
+              toast.error(detail || "Login Failed!");
+              break;
+          }
         }
       } else {
         toast.error("Something went wrong. Please try again.");

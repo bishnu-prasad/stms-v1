@@ -86,18 +86,20 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/login") &&
       !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
       try {
-        const response = await refreshAccessToken();
+        await refreshAccessToken();
 
         // Retry the original request that failed.
         return api(originalRequest);
-      } catch {
+      } catch (refreshError) {
         if (window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
+        return Promise.reject(refreshError);
       }
     }
 
