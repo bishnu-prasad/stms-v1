@@ -34,6 +34,9 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+from slowapi.util import get_remote_address
+from app.core.rate_limiter import limiter
+
 
 from app.core.settings import settings
 from app.db.dependencies import get_db
@@ -166,13 +169,15 @@ def logout(response: Response):
     "/forgot-password",
     response_model=ForgotPasswordResponse,
 )
+@limiter.limit("1/minute")
 async def forgot_password(
-    request: ForgotPasswordRequest,
+    request: Request,
+    forgot_password_request: ForgotPasswordRequest,
     db: Session = Depends(get_db),
 ):
     return await auth_service.forgot_password(
         db=db,
-        request=request,
+        request=forgot_password_request,
     )
 
 # Reset Password Endpoint

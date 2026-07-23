@@ -13,6 +13,12 @@ This file is executed when the FastAPI application starts.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi import _rate_limit_exceeded_handler
+
+from app.core.rate_limiter import limiter
+
 import app.db.models
 
 from app.api.router import api_router
@@ -22,6 +28,10 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

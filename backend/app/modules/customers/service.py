@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.modules.customers.repository import CustomerRepository
@@ -22,7 +23,10 @@ class CustomerService:
         )
 
         if existing_customer:
-            raise ValueError("Company short name already exists.")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Company short name already exists.",
+            )
 
         customer_code = generate_public_id("CUS")
 
@@ -31,3 +35,22 @@ class CustomerService:
             customer=customer,
             customer_code=customer_code,
         )
+
+    # Retrieves a customer by customer code for use in other modules.
+    def get_customer_by_code(
+        self,
+        db: Session,
+        customer_code: str,
+    ) -> Customer:
+        customer = self.repository.get_customer_by_code(
+            db=db,
+            customer_code=customer_code,
+        )
+
+        if not customer:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Customer not found.",
+            )
+
+        return customer

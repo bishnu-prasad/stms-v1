@@ -26,6 +26,7 @@ class CustomerRepository:
       
     
       
+    # Retrieves a customer by company short name to validate duplicate customers.
     def get_customer_by_company_short_name(
       self,
       db: Session,
@@ -36,3 +37,15 @@ class CustomerRepository:
     .filter(Customer.company_short_name == company_short_name)
     .first()
 )
+
+    # Retrieves a customer by customer code for use in other modules (e.g., SMTP settings).
+    def get_customer_by_code(
+        self,
+        db: Session,
+        customer_code: str,
+    ) -> Customer | None:
+        return (
+            db.query(Customer)
+            .filter(Customer.customer_code == customer_code)
+            .first()
+        )

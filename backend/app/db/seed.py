@@ -9,6 +9,9 @@ from app.modules.accounts.enums import (
     AccountStatus,
 )
 from app.core.security import get_password_hash
+from app.modules.smtp_settings.models import CustomerSMTPSettings
+from app.modules.smtp_settings.enums import SMTPSecurity
+from app.core.settings import settings
 
 def seed_platform_owner(
     db: Session,
@@ -59,6 +62,34 @@ def seed_platform_owner(
             print("✅ Platform Owner created successfully.")
         else:
             print("✅ Platform Owner already exists.")
+
+        # Create default SMTP configuration for Platform Owner if not exists
+        smtp_settings = (
+            db.query(CustomerSMTPSettings)
+            .filter(CustomerSMTPSettings.customer_id == platform_customer.customer_id)
+            .first()
+        )
+
+        if smtp_settings is None:
+            smtp_settings = CustomerSMTPSettings(
+                customer_id=platform_customer.customer_id,
+                smtp_host=settings.mail_server,
+                smtp_port=settings.mail_port,
+                smtp_username=settings.mail_username,
+                smtp_password=settings.mail_password,
+                from_email=settings.mail_from,
+                from_name=settings.mail_from_name,
+                smtp_security=SMTPSecurity.TLS,
+                is_active=True,
+            )
+
+            db.add(smtp_settings)
+            db.commit()
+            db.refresh(smtp_settings)
+
+            print("✅ Platform SMTP settings created successfully.")
+        else:
+            print("✅ Platform SMTP settings already exist.")
     except Exception:
         db.rollback()
         raise

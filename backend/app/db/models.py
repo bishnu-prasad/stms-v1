@@ -9,5 +9,8 @@ IMPORTANT:
 Whenever a new model is created, import it here.
 """
 
+
+
 from app.modules.accounts.models import Account
 from app.modules.customers.models import Customer
+from app.modules.smtp_settings.models import CustomerSMTPSettings

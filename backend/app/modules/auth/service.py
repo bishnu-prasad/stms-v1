@@ -239,6 +239,8 @@ class AuthService:
 
         # Send the password reset email.
         await self.mail_service.send_password_reset_email(
+            db=db,
+            customer_id=account.customer_id,
             email=account.email,
             reset_url=reset_url,
         )

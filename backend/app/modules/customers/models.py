@@ -2,6 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.modules.accounts.models import Account
+    from app.modules.smtp_settings.models import CustomerSMTPSettings
+    
 from datetime import datetime
 from sqlalchemy import BigInteger, String, func , DateTime
 from sqlalchemy.orm import Mapped, mapped_column , relationship
@@ -53,4 +55,10 @@ class Customer(Base):
     accounts: Mapped[list["Account"]] = relationship(
     "Account",
     back_populates="customer",
+)
+    
+    smtp_settings: Mapped["CustomerSMTPSettings"] = relationship(
+    "CustomerSMTPSettings",
+    back_populates="customer",
+    uselist=False,
 )

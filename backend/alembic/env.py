@@ -5,6 +5,7 @@ from sqlalchemy import pool
 from app.db.base import Base
 from app.modules.customers.models import Customer
 from app.modules.accounts.models import Account
+from app.modules.smtp_settings.models import CustomerSMTPSettings
 from app.core.settings import settings
 
 
