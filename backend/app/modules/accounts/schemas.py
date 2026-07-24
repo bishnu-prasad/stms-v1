@@ -1,6 +1,8 @@
-from pydantic import BaseModel,EmailStr,Field
+from datetime import datetime
 
-from app.modules.accounts.enums import AccountStatus
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+from app.modules.accounts.enums import AccountStatus, AccountType
 
 
 class AccountCreate(BaseModel):    
@@ -68,3 +70,30 @@ class AccountCreate(BaseModel):
         default=False,
         description="Whether the interface should use right-to-left layout.",
     )
+    
+class AccountResponse(BaseModel):
+    account_code: str
+    customer_id: int
+
+    first_name: str
+    last_name: str
+
+    username: str
+    email: EmailStr
+    mobile_no: str | None
+
+    account_type: AccountType
+    status: AccountStatus
+
+    language: str
+    timezone: str
+    date_format: str
+
+    two_factor_enabled: bool
+    is_rtl: bool
+
+    created_at: datetime
+    updated_at: datetime
+    last_login_at: datetime | None
+
+    model_config = ConfigDict(from_attributes=True)

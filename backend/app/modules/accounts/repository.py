@@ -8,10 +8,15 @@ class AccountRepository:
         self,
         db: Session,
         account: Account,
+        commit: bool = True,
     ) -> Account:
         db.add(account)
-        db.commit()
-        db.refresh(account)
+        if commit:
+            db.commit()
+            db.refresh(account)
+        else:
+            db.flush()
+            db.refresh(account)
 
         return account
 

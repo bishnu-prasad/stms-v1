@@ -7,22 +7,17 @@ class CustomerRepository:
     def create_customer(
         self,
         db: Session,
-        customer: CustomerCreate,
-        customer_code: str,
+        customer: Customer,
+        commit: bool = True,
     ) -> Customer:
-        db_customer = Customer(
-            customer_code=customer_code,
-            company_short_name=customer.company_short_name,
-            company_name=customer.company_name,
-            status=customer.status,
-        )
-        
-
-        db.add(db_customer)
-        db.commit()
-        db.refresh(db_customer)
-        
-        return db_customer
+        db.add(customer)
+        if commit:
+            db.commit()
+            db.refresh(customer)
+        else:
+            db.flush()
+            db.refresh(customer)
+        return customer
       
     
       

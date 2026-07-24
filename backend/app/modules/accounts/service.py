@@ -22,6 +22,7 @@ class AccountService:
         account_type: AccountType,
         created_by: int | None = None,
         parent_account_id: int | None = None,
+        commit: bool = True,
     ) -> Account:
         existing_username = self.repository.get_by_username(
             db=db,
@@ -68,4 +69,5 @@ class AccountService:
         return self.repository.create_account(
             db=db,
             account=db_account,
+            commit=commit,
         )

@@ -75,8 +75,6 @@ class SMTPSettingsResponse(SMTPSettingsBase):
       should receive but never send in a request.
 
     """
-      smtp_setting_id: int
-      customer_id: int
       is_active: bool
 
       class Config:

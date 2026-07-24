@@ -22,7 +22,6 @@ class CustomerUpdate(BaseModel):
 
 
 class CustomerResponse(CustomerBase):
-    customer_id: int
     customer_code: str
     created_at: datetime
     updated_at: datetime

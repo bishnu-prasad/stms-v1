@@ -28,10 +28,11 @@ def create_smtp_settings(
     customer: Customer = Depends(get_customer_by_code),
     db: Session = Depends(get_db),
 ):
-    smtp_service = SMTPSettingsService(db)
+    smtp_service = SMTPSettingsService()
 
     # Create SMTP settings using the internal customer ID.
     return smtp_service.create_smtp_settings(
+        db=db,
         customer_id=customer.customer_id,
         smtp_settings=smtp_settings,
     )
@@ -45,10 +46,11 @@ def get_smtp_settings(
     customer: Customer = Depends(get_customer_by_code),
     db: Session = Depends(get_db),
 ):
-    smtp_service = SMTPSettingsService(db)
+    smtp_service = SMTPSettingsService()
 
     # Retrieve SMTP settings using the internal customer ID.
     return smtp_service.get_smtp_settings(
+        db=db,
         customer_id=customer.customer_id,
     )
 
@@ -62,10 +64,11 @@ def update_smtp_settings(
     customer: Customer = Depends(get_customer_by_code),
     db: Session = Depends(get_db),
 ):
-    smtp_service = SMTPSettingsService(db)
+    smtp_service = SMTPSettingsService()
 
     # Update SMTP settings using the internal customer ID.
     return smtp_service.update_smtp_settings(
+        db=db,
         customer_id=customer.customer_id,
         smtp_settings=smtp_settings,
     )

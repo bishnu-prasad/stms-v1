@@ -51,6 +51,7 @@ class SMTPSettingsRepository:
         self,
         customer_id: int,
         smtp_settings: SMTPSettingsCreate,
+        commit: bool = True,
     ) -> CustomerSMTPSettings:
         """
         Create and save SMTP settings for a customer.
@@ -62,8 +63,12 @@ class SMTPSettingsRepository:
         )
 
         self.db.add(db_smtp_settings)
-        self.db.commit()
-        self.db.refresh(db_smtp_settings)
+        if commit:
+            self.db.commit()
+            self.db.refresh(db_smtp_settings)
+        else:
+            self.db.flush()
+            self.db.refresh(db_smtp_settings)
 
         return db_smtp_settings
       

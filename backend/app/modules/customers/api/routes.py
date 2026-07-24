@@ -9,7 +9,10 @@ from app.modules.customers.schemas import (
 )
 from app.modules.customers.service import CustomerService
 
-
+# TODO:
+# Remove this endpoint once all organization onboarding
+# is handled through workflow modules (Platform Owner,
+# Super Admin, etc.).
 router = APIRouter(
     prefix="/customers",
     tags=["Customers"],

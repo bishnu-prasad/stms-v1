@@ -26,20 +26,22 @@ class SMTPSettingsService:
     - Keeps routes thin and focused on HTTP handling.
     """
     
-    def __init__(self, db: Session):
+    def __init__(self):
         """
-        Initialize the service with a database session.
+        Initialize the service.
         """
-        self.repository = SMTPSettingsRepository(db)
+        pass
         
-    # Creates SMTP settings for the specified customer.
     def create_smtp_settings(
         self,
+        db: Session,
         customer_id: int,
         smtp_settings: SMTPSettingsCreate,
+        commit: bool = True,
     ):
+        repository = SMTPSettingsRepository(db)
         # Ensure only one SMTP configuration exists per customer.
-        existing_smtp_settings = self.repository.get_by_customer_id(
+        existing_smtp_settings = repository.get_by_customer_id(
             customer_id
         )
         if existing_smtp_settings:
@@ -47,17 +49,20 @@ class SMTPSettingsService:
                 status_code=status.HTTP_409_CONFLICT,
                 detail="SMTP settings already exist for this customer.",
             )
-        return self.repository.create(
+        return repository.create(
           customer_id=customer_id,
           smtp_settings=smtp_settings,
+          commit=commit,
         )
         
     # Retrieves SMTP settings for the specified customer.
     def get_smtp_settings(
         self,
+        db: Session,
         customer_id: int,
     ):
-        smtp_settings = self.repository.get_by_customer_id(
+        repository = SMTPSettingsRepository(db)
+        smtp_settings = repository.get_by_customer_id(
             customer_id
         )
 
@@ -72,11 +77,13 @@ class SMTPSettingsService:
     # Updates SMTP settings for the specified customer.
     def update_smtp_settings(
         self,
+        db: Session,
         customer_id: int,
         smtp_settings: SMTPSettingsUpdate,
     ):
+        repository = SMTPSettingsRepository(db)
         # Ensure SMTP settings exist before attempting an update.
-        existing_smtp_settings = self.repository.get_by_customer_id(
+        existing_smtp_settings = repository.get_by_customer_id(
             customer_id
         )
         if not existing_smtp_settings:
@@ -85,7 +92,7 @@ class SMTPSettingsService:
                 detail="SMTP settings not found for this customer.",
             )
         # Persist the updated SMTP settings.
-        return self.repository.update(
+        return repository.update(
             smtp_settings=existing_smtp_settings,
             smtp_settings_data=smtp_settings,
         )

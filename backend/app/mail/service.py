@@ -44,8 +44,9 @@ class MailService:
         # Send a password reset email using the customer's
         # active SMTP configuration stored in the database.
         # Retrieve the active SMTP configuration for the customer.
-        smtp_service = SMTPSettingsService(db)
+        smtp_service = SMTPSettingsService()
         smtp_settings = smtp_service.get_smtp_settings(
+            db=db,
             customer_id=customer_id,
         )
         

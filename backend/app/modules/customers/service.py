@@ -16,6 +16,7 @@ class CustomerService:
         self,
         db: Session,
         customer: CustomerCreate,
+        commit: bool = True,
     ) -> Customer:
         existing_customer = self.repository.get_customer_by_company_short_name(
             db=db,
@@ -30,10 +31,17 @@ class CustomerService:
 
         customer_code = generate_public_id("CUS")
 
+        db_customer = Customer(
+            customer_code=customer_code,
+            company_short_name=customer.company_short_name,
+            company_name=customer.company_name,
+            status=customer.status,
+        )
+
         return self.repository.create_customer(
             db=db,
-            customer=customer,
-            customer_code=customer_code,
+            customer=db_customer,
+            commit=commit,
         )
 
     # Retrieves a customer by customer code for use in other modules.
