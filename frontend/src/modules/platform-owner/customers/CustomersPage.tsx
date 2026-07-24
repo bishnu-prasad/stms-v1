@@ -4,6 +4,7 @@ import { Search, Filter, ChevronRight, Users, Building2, TrendingUp, ArrowUpRigh
 import { customers, Customer } from "@/modules/platform-owner/data/ownerMockData";
 import { OwnerStatusBadge } from "@/modules/platform-owner/components/OwnerStatusBadge";
 import { OwnerMetricCard } from "@/modules/platform-owner/components/OwnerMetricCard";
+import { AddCustomerModal } from "@/modules/platform-owner/components/AddCustomerModal";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -561,257 +562,6 @@ function CustomerDetail({ c, onClose }: { c: Customer; onClose: () => void }) {
   );
 }
 
-function AddCustomerModal({
-  isOpen,
-  onClose,
-  onSave,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (c: Customer) => void;
-}) {
-  const [name, setName] = useState("");
-  const [logo, setLogo] = useState("");
-  const [plan, setPlan] = useState<Customer["plan"]>("Trial");
-  const [status, setStatus] = useState<Customer["status"]>("trial");
-  const [sites, setSites] = useState(0);
-  const [region, setRegion] = useState("North");
-  const [circle, setCircle] = useState("");
-  const [uptime, setUptime] = useState(99.0);
-  const [mrr, setMrr] = useState(0);
-  const [users, setUsers] = useState(0);
-  const [riskScore, setRiskScore] = useState(0);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !logo) return;
-    const newCustomer: Customer = {
-      id: `cust-${Date.now()}`,
-      name,
-      logo: logo.toUpperCase().slice(0, 2),
-      plan,
-      status,
-      sites: Number(sites),
-      healthySites: Number(sites),
-      offlineSites: 0,
-      users: Number(users),
-      health: status === "suspended" ? "Offline" : "Healthy",
-      uptime: Number(uptime),
-      mrr: Number(mrr),
-      arr: Number(mrr) * 12,
-      region,
-      circle,
-      riskScore: Number(riskScore),
-      joinDate: new Date().toISOString().split("T")[0],
-      renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-      devices: Number(sites) * 8,
-      alarms: { critical: 0, major: 0, minor: 0 },
-      invoiceDue: 0,
-    };
-    onSave(newCustomer);
-    onClose();
-    setName("");
-    setLogo("");
-    setPlan("Trial");
-    setStatus("trial");
-    setSites(0);
-    setRegion("North");
-    setCircle("");
-    setUptime(99.0);
-    setMrr(0);
-    setUsers(0);
-    setRiskScore(0);
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl w-full max-w-lg overflow-hidden flex flex-col p-6 space-y-4 shadow-xl border border-slate-100"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b pb-3 border-slate-100">
-          <h2 className="text-sm font-bold text-slate-800">Add New Customer</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 font-bold text-sm leading-none cursor-pointer">✕</button>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs text-slate-600">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Company Name</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Jio Infocomm"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Logo Initials (Max 2 letters)</label>
-              <input
-                type="text"
-                required
-                maxLength={2}
-                placeholder="e.g. JI"
-                value={logo}
-                onChange={(e) => setLogo(e.target.value)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 uppercase"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Plan</label>
-              <select
-                value={plan}
-                onChange={(e) => setPlan(e.target.value as any)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-2 outline-none focus:border-indigo-500"
-              >
-                <option value="Trial">Trial</option>
-                <option value="Basic">Basic</option>
-                <option value="Business">Business</option>
-                <option value="Professional">Professional</option>
-                <option value="Enterprise">Enterprise</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as any)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-2 outline-none focus:border-indigo-500"
-              >
-                <option value="trial">Trial</option>
-                <option value="active">Active</option>
-                <option value="expired">Expired</option>
-                <option value="suspended">Suspended</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Sites</label>
-              <input
-                type="number"
-                min={0}
-                required
-                placeholder="e.g. 1500"
-                value={sites || ""}
-                onChange={(e) => setSites(Number(e.target.value))}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Uptime Target (%)</label>
-              <input
-                type="number"
-                step="0.01"
-                min={0}
-                max={100}
-                required
-                placeholder="99.5"
-                value={uptime || ""}
-                onChange={(e) => setUptime(Number(e.target.value))}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">MRR (in ₹)</label>
-              <input
-                type="number"
-                required
-                placeholder="500000"
-                value={mrr || ""}
-                onChange={(e) => setMrr(Number(e.target.value))}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Region</label>
-              <select
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-2 outline-none focus:border-indigo-500"
-              >
-                <option value="North">North</option>
-                <option value="West">West</option>
-                <option value="South">South</option>
-                <option value="East">East</option>
-                <option value="Central">Central</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Circle</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Maharashtra"
-                value={circle}
-                onChange={(e) => setCircle(e.target.value)}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Users</label>
-              <input
-                type="number"
-                required
-                placeholder="e.g. 50"
-                value={users || ""}
-                onChange={(e) => setUsers(Number(e.target.value))}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Risk Score (0-100)</label>
-              <input
-                type="number"
-                min={0}
-                max={100}
-                required
-                placeholder="e.g. 15"
-                value={riskScore || ""}
-                onChange={(e) => setRiskScore(Number(e.target.value))}
-                className="w-full h-8.5 rounded-lg border border-slate-200 px-3 outline-none focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-8.5 px-4 rounded-lg text-slate-600 hover:bg-slate-50 border border-slate-200 font-semibold cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="h-8.5 px-5 rounded-lg text-white font-bold cursor-pointer transition-all active:scale-95 shadow-sm"
-              style={{ background: "linear-gradient(135deg, #6366F1, #8B5CF6)" }}
-            >
-              Save Customer
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
-
 export function CustomersScreen() {
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [search, setSearch] = useState("");
@@ -855,17 +605,42 @@ export function CustomersScreen() {
     { label: "Expired", value: customersList.filter((c) => c.status === "expired").length, color: "#EF4444" },
   ];
 
+  const handleCustomerCreated = (formData: any) => {
+    const newCustObj: Customer = {
+      id: `cust-${Date.now()}`,
+      name: formData.customer.company_name,
+      logo: formData.customer.company_short_name.toUpperCase().slice(0, 2),
+      plan: "Enterprise",
+      status: formData.customer.status.toLowerCase() as any,
+      sites: 0,
+      healthySites: 0,
+      offlineSites: 0,
+      users: 1,
+      health: "Healthy",
+      uptime: 100.0,
+      mrr: 0,
+      arr: 0,
+      region: "North",
+      circle: "Circle-1",
+      riskScore: 0,
+      joinDate: new Date().toISOString().split("T")[0],
+      renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      devices: 0,
+      alarms: { critical: 0, major: 0, minor: 0 },
+      invoiceDue: 0,
+    };
+    setCustomersList((prev) => [newCustObj, ...prev]);
+  };
+
   return (
     <div className="space-y-5 pb-6">
       
         {selectedCustomer && <CustomerDetail c={selectedCustomer} onClose={() => setSelectedCustomer(null)} />}
-        {isAddModalOpen && (
-          <AddCustomerModal 
-            isOpen={isAddModalOpen} 
-            onClose={() => setIsAddModalOpen(false)} 
-            onSave={(newCust) => setCustomersList([...customersList, newCust])} 
-          />
-        )}
+        <AddCustomerModal 
+          isOpen={isAddModalOpen} 
+          onClose={() => setIsAddModalOpen(false)} 
+          onSuccess={handleCustomerCreated} 
+        />
       
 
       <div className="flex items-center justify-between">

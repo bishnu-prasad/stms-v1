@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.common.id_generator import generate_public_id
+from app.common.username_generator import generate_username
 from app.core.security import get_password_hash
 from app.modules.accounts.enums import AccountType
 from app.modules.accounts.models import Account
@@ -24,15 +25,21 @@ class AccountService:
         parent_account_id: int | None = None,
         commit: bool = True,
     ) -> Account:
-        existing_username = self.repository.get_by_username(
-            db=db,
-            username=account.username,
-        )
+        # Always generate unique username using format: <firstname><5_random_digits>@<company_short_name>
+        generated_username = None
+        for _ in range(10):
+            candidate = generate_username(
+                first_name=account.first_name,
+                company_short_name=customer.company_short_name,
+            )
+            if not self.repository.get_by_username(db=db, username=candidate):
+                generated_username = candidate
+                break
 
-        if existing_username:
+        if not generated_username:
             raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Username already exists.",
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to generate a unique username. Please try again.",
             )
 
         existing_email = self.repository.get_by_email(
@@ -51,7 +58,7 @@ class AccountService:
             customer_id=customer.customer_id,
             first_name=account.first_name,
             last_name=account.last_name,
-            username=account.username,
+            username=generated_username,
             email=account.email,
             mobile_no=account.mobile_no,
             password_hash=get_password_hash(account.password),

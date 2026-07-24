@@ -20,19 +20,12 @@ class AccountCreate(BaseModel):
         max_length=100,
         description="Last name of the Account.",
     )
-    username: str = Field(
-        ...,
-        min_length=3,
-        max_length=150,
-        description="Unique username used for login.",
-    )
     email: EmailStr = Field(
         ...,
         description="Email address of the Account.",
     )
-    mobile_no: str = Field(
-        ...,
-        min_length=10,
+    mobile_no: str | None = Field(
+        default=None,
         max_length=20,
         description="Mobile number used for login and communication.",
     )
