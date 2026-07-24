@@ -5,6 +5,7 @@ from app.db.dependencies import get_db
 from app.modules.platform_owner.schemas import (
     CreateSuperAdminRequest,
     CreateSuperAdminResponse,
+    SuperAdminListResponse,
 )
 from app.modules.platform_owner.service import PlatformOwnerService
 
@@ -28,4 +29,17 @@ def create_super_admin(
     return platform_owner_service.create_super_admin(
         db=db,
         request=request,
+    )
+
+
+@router.get(
+    "/super-admins",
+    response_model=SuperAdminListResponse,
+    status_code=status.HTTP_200_OK,
+)
+def get_super_admins(
+    db: Session = Depends(get_db),
+) -> SuperAdminListResponse:
+    return platform_owner_service.get_super_admins(
+        db=db,
     )

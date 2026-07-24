@@ -1,20 +1,26 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import Annotated
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
 
 from app.modules.accounts.enums import AccountStatus, AccountType
+
+NameStr = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True),
+]
 
 
 class AccountCreate(BaseModel):    
 
     # Basic Account Information
-    first_name: str = Field(
+    first_name: NameStr = Field(
         ...,
         min_length=2,
         max_length=100,
         description="First name of the Account.",
     )
-    last_name: str = Field(
+    last_name: NameStr = Field(
         ...,
         min_length=2,
         max_length=100,
