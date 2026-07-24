@@ -1,12 +1,13 @@
 from pydantic import BaseModel , ConfigDict
 from datetime import datetime
+from app.modules.customers.enums import CustomerStatus
 
 
 
 class CustomerBase(BaseModel):
     company_short_name: str
     company_name: str
-    status: str
+    status: CustomerStatus
 
 
 
@@ -17,7 +18,7 @@ class CustomerCreate(CustomerBase):
 class CustomerUpdate(BaseModel):
     company_short_name: str | None = None
     company_name: str | None = None
-    status: str | None = None
+    status: CustomerStatus | None = None
 
 
 class CustomerResponse(CustomerBase):

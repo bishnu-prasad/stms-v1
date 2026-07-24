@@ -5,10 +5,11 @@ if TYPE_CHECKING:
     from app.modules.smtp_settings.models import CustomerSMTPSettings
     
 from datetime import datetime
-from sqlalchemy import BigInteger, String, func , DateTime
+from sqlalchemy import BigInteger, String, func, DateTime, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column , relationship
 
 from app.db.base import Base
+from app.modules.customers.enums import CustomerStatus
 
 
 class Customer(Base):
@@ -35,9 +36,8 @@ class Customer(Base):
     
     customer_type_id: Mapped[int | None] = mapped_column()      
     
-    status: Mapped[str] = mapped_column(
-        String(20),
-        default="INACTIVE",
+    status: Mapped[CustomerStatus] = mapped_column(
+        SQLEnum(CustomerStatus),
         nullable=False,
     )
     

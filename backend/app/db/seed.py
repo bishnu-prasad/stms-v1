@@ -52,6 +52,13 @@ def seed_platform_owner(
                 account_type=AccountType.PLATFORM_OWNER,
                 status=AccountStatus.ACTIVE,
                 mobile_no="9876543210",
+                first_name="Platform",
+                last_name="Owner",
+                timezone="Asia/Kolkata",
+                language="en",
+                date_format="DD/MM/YYYY",
+                two_factor_enabled=False,
+                is_rtl=False,
             )
 
             db.add(platform_owner)
@@ -79,7 +86,7 @@ def seed_platform_owner(
                 smtp_password=settings.mail_password,
                 from_email=settings.mail_from,
                 from_name=settings.mail_from_name,
-                smtp_security=SMTPSecurity.TLS,
+                smtp_security=SMTPSecurity.SSL,
                 is_active=True,
             )
 
